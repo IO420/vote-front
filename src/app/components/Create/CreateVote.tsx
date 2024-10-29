@@ -9,7 +9,7 @@ export default function CreateVote() {
         <label>Vote name</label>
         <input type="text"></input>
 
-        <button type="submit">Login</button>
+        <button type="submit">Submit</button>
       </form>
     </div>
   )
