@@ -24,8 +24,6 @@ export default function page() {
         items={votes}
         RenderComponent={MapeoVote}
       />
-      <Login />
-      <Vote />
     </>
   );
 }

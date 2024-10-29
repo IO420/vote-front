@@ -19,7 +19,7 @@ export default function NavPage() {
         <Link href={'/'} ><li className={pathname === '/' ? 'select':''}>Home</li></Link>
         <Link href={'/CreateUser'} ><li className={pathname === '/CreateUser' ? 'select':''}>Create User</li></Link>
         <Link href={'/CreateVote'} ><li className={pathname === '/CreateVote' ? 'select':''}>Create Vote</li></Link>
-        <Link href={'/voteAssignment'} ><li className={pathname === '/voteAssignment' ? 'select':''}>Vote Assignment</li></Link>
+        <Link href={'/VoteAssignment'} ><li className={pathname === '/VoteAssignment' ? 'select':''}>Vote Assignment</li></Link>
       </ul>
     </div>
   );

@@ -5,12 +5,11 @@ import VoteTracker from "../components/vote/VoteTracker";
 import wallPaper from "../components/vote/img/wallpaper.avif";
 import MapeoVote from "../components/vote/MapeoVote";
 import Guard from "../services/guard";
+import Vote from "../components/vote/Vote";
 
 export default function VotePage() {
   const votes = [
     { id: 1, name: "Vote 1", image: wallPaper },
-    { id: 2, name: "Vote 2", image: wallPaper },
-    { id: 3, name: "Vote 3", image: wallPaper },
   ];
 
   function formatPathname(path: string) {
@@ -30,6 +29,7 @@ export default function VotePage() {
           items={votes}
           RenderComponent={MapeoVote}
         />
+        <Vote />
       </Guard>
     </>
   );

@@ -21,10 +21,10 @@
 }
 
 .img {
-    position: relative;
-    width: 100%;
-    height: 80px;
-  }
+  position: relative;
+  width: 100%;
+  height: 80px;
+}
 
 .bodyTracker {
   display: flex;
@@ -39,4 +39,31 @@
 .voteName {
   position: relative;
   padding: 10px;
+}
+.bodyAssignament {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px;
+  overflow: auto;
+  border: 1px solid #cfcfcf;
+  min-height: 190px;
+}
+.bodyAssignament section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
+}
+.user-select,
+.vote-select {
+  display: flex;
+  flex-direction: column;
+}
+
+.vote-select {
+  max-height: 250px;
+  overflow: auto;
+  scrollbar-width: auto;
 }

@@ -5,8 +5,11 @@ export default function CreateVote() {
     <div className="form">
       <form>
         <h2 className="title">Create vote</h2>
+
         <label>Vote name</label>
         <input type="text"></input>
+
+        <button type="submit">Login</button>
       </form>
     </div>
   )
