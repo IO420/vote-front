@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Footer from "./components/footer/Footer";
+import Header from "./components/header/Header";
+import NavPage from "./components/nav/NavPage";
 
 export const metadata: Metadata = {
   title: "Vote",
@@ -15,7 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <Header />
+        <div className="main">
+          <NavPage />
+          <section className="mainContainer"> {children}</section>
+        </div>
+        <Footer />
       </body>
     </html>
   );

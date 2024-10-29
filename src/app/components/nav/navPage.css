@@ -1,0 +1,36 @@
+.navPage {
+    background-color: white;
+    margin: 10px;
+    width: 20vw;
+}
+
+.mainPage li{
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #cfcfcf;
+    z-index: 1000; 
+}
+
+.show li{
+    display: block !important;
+}
+.select{
+    background-color: #4596ec !important;
+    color: black !important;
+}
+
+@media (max-width: 768px) {
+    .navPage {
+        width: 100vw;
+        margin: 0; 
+        position: sticky;
+        top: 0;
+    }
+
+    .mainPage li {
+        padding: 15px; 
+        font-size: 1rem;
+        display: none;
+    }
+
+}
