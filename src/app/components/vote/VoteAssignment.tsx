@@ -1,38 +1,65 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useFetch } from "../../services/fetch";
 import "./vote.css";
 
-const users = ["Usuario 1", "Usuario 2", "Usuario 3"];
-const votes = ["Votación 1", "Votación 2", "Votación 3"];
-
 export default function VoteAssignment() {
+  const { fetchData, error } = useFetch();
+  const [users, setUsers] = useState<{ id_user: number; name: string }[]>([]);
+  const [votes, setVotes] = useState<{ id_elections: number; name: string }[]>([]);
   const [selectedUser, setSelectedUser] = useState("");
-  const [assignedVotes, setAssignedVotes] = useState([{ vote: "" }]);
+  const [assignedVote, setAssignedVote] = useState("");
+
+  useEffect(() => {
+    const fetchUsersAndVotes = async () => {
+      try {
+        const usersData = await fetchData({}, "/user", "GET");
+        setUsers(usersData);
+
+        const votesData = await fetchData({}, "/elections", "GET");
+        setVotes(votesData);
+      } catch (err) {
+        console.error("Error fetching users or votes:", err);
+      }
+    };
+
+    fetchUsersAndVotes();
+  }, []);
 
   const handleUserChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedUser(e.target.value);
+    console.log(selectedUser);
   };
 
-  const handleVoteChange = (index: number, value: string) => {
-    const newVotes = [...assignedVotes];
-    newVotes[index].vote = value;
-    setAssignedVotes(newVotes);
+  const handleVoteChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setAssignedVote(e.target.value);
+    console.log(assignedVote);
   };
 
-  const addVoteField = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setAssignedVotes([...assignedVotes, { vote: "" }]);
-  };
 
-  const removeVoteField = (index: number) => {
-    const newVotes = assignedVotes.filter((_, i) => i !== index);
-    setAssignedVotes(newVotes);
-  };
+    if (!assignedVote) {
+      console.error("Please select a vote");
+      return;
+    }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); 
-    console.log("Usuario:", selectedUser);
-    console.log("Votaciones asignadas:", assignedVotes);
+    try {
+      console.log(selectedUser, assignedVote);
+      const voteData = {
+        id_user: selectedUser,
+        id_elections: assignedVote, // Solo se envía un voto
+      };
+      const response = await fetchData(
+        voteData,
+        "/user-elections/assign",
+        "POST",
+        true
+      );
+      console.log("Asignación exitosa:", response);
+    } catch (error) {
+      console.error("Error al asignar la votación:", error);
+    }
   };
 
   return (
@@ -43,11 +70,11 @@ export default function VoteAssignment() {
         <section>
           <div className="user-select">
             <label>Select User:</label>
-            <select value={selectedUser} onChange={handleUserChange}>
+            <select value={selectedUser} onChange={handleUserChange} required>
               <option value="">Select</option>
-              {users.map((user, index) => (
-                <option key={index} value={user}>
-                  {user}
+              {users.map((user) => (
+                <option key={user.id_user} value={user.id_user}>
+                  {user.name}
                 </option>
               ))}
             </select>
@@ -55,32 +82,24 @@ export default function VoteAssignment() {
 
           <div className="vote-select">
             <label>Select Vote:</label>
-            {assignedVotes.map((_, index) => (
-              <div key={index} className="vote-field">
-                <select
-                  value={assignedVotes[index].vote}
-                  onChange={(e) => handleVoteChange(index, e.target.value)}
-                >
-                  <option value="">Select Vote</option>
-                  {votes.map((vote, i) => (
-                    <option key={i} value={vote}>
-                      {vote}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={() => removeVoteField(index)}
-                  className="remove-button"
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
-            <button onClick={addVoteField}>Add Vote</button>
+            <select
+              value={assignedVote} // Cambia para usar un único voto
+              onChange={handleVoteChange}
+              required
+            >
+              <option value="">Select Vote</option>
+              {votes.map((vote) => (
+                <option key={vote.id_elections} value={vote.id_elections}>
+                  {vote.name}
+                </option>
+              ))}
+            </select>
           </div>
         </section>
 
         <button type="submit">Submit Assignment</button>
+
+        {error && <p style={{ color: "red" }}>Error: {error}</p>}
       </form>
     </div>
   );

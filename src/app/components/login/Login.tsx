@@ -1,11 +1,14 @@
 "use client";
 import { useFetch } from "@/app/services/fetch";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 import { useState } from "react";
 
 export default function Login() {
   const [name, setname] = useState("");
   const [password, setpassword] = useState("");
+  const pathname = usePathname();
   const { fetchData, error } = useFetch();
 
   const handleSubmit = async (event: any) => {
@@ -15,6 +18,7 @@ export default function Login() {
     if (response) {
       localStorage.setItem("Token", response.token);
     }
+    <Link href={'/'}><li className={pathname === '/' ? 'select':''}>Home</li></Link>
   };
 
   return (

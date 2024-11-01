@@ -1,34 +1,43 @@
-// webSocketService.ts
 import { io, Socket } from 'socket.io-client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
-const socketUrl = 'http://localhost:3000'; // Cambia la URL según tu configuración
+const socketUrl = 'http://localhost:3000'; 
 
+// Define la interfaz Vote para reflejar la estructura de datos recibida
 export interface Vote {
-  name: string;
-  count: number;
+  id_user_elections: number; // ID único para cada voto
+  option: string; // Opción del voto
 }
 
 export const useWebSocket = () => {
-  const [votes, setVotes] = useState<Vote[]>([]); // Estado para almacenar las votaciones
-  const socket: Socket = io(socketUrl); // Crear la conexión al socket
+  const [votes, setVotes] = useState<Vote[]>([]); 
+  const socketRef = useRef<Socket | null>(null); // Almacena la referencia del socket
 
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Conectado al servidor de votación');
-    });
+    // Crea el socket solo si no existe aún
+    if (!socketRef.current) {
+      socketRef.current = io(socketUrl);
 
-    // Escuchar el evento 'updateVotes' del servidor
-    socket.on('updateVotes', (updatedVotes: Vote[]) => {
-      setVotes(updatedVotes); // Actualiza el estado con las votaciones recibidas
-    });
+      socketRef.current.on('connect', () => {
+        console.log('Conectado al servidor de votación');
+      });
 
-    // Limpiar la conexión al desmontar el componente
+      // Escuchar por actualizaciones de votos
+      socketRef.current.on('updateVoters', (data: Vote[]) => {
+        console.log('Voto recibido:', data);
+        setVotes(data); // Actualiza el estado de votos con todos los votos recibidos
+      });
+    }
+
     return () => {
-      socket.off('updateVotes'); // Desuscribirse del evento al desmontar
-      socket.disconnect(); // Desconectar el socket si es necesario
+      // Desconecta el socket solo si la referencia existe
+      if (socketRef.current) {
+        socketRef.current.off('updateVoters');
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
     };
-  }, [socket]); // Añadimos el socket como dependencia
+  }, []); 
 
-  return { votes }; // Retornar las votaciones
+  return { votes };
 };
