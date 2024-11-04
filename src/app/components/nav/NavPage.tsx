@@ -6,14 +6,32 @@ import { usePathname, useRouter } from "next/navigation";
 
 export default function NavPage() {
   const [isVisible, setIsVisible] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado para verificar autenticación
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
-    // Verificar si el token está en localStorage
     const token = localStorage.getItem("Token");
     setIsAuthenticated(!!token); // true si existe el token, false si no
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("Token");
+
+    if (token) {
+      try {
+        const payloadBase64 = token.split('.')[1];
+        const decodedPayload = JSON.parse(atob(payloadBase64));
+      
+        setIsAdmin(decodedPayload.type === 1);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        setIsAdmin(false); // En caso de error en la decodificación, establece false
+      }
+    } else {
+      setIsAdmin(false); // Si no hay token, establece false
+    }
   }, []);
 
   const toggleVisibility = () => {
@@ -22,7 +40,7 @@ export default function NavPage() {
 
   const handleLogout = () => {
     localStorage.removeItem("Token");
-    setIsAuthenticated(false); // Cambia el estado de autenticación
+    setIsAuthenticated(false);
     router.push("/");
   };
 
@@ -32,7 +50,7 @@ export default function NavPage() {
       <ul className={`mainPage ${isVisible ? "show" : ""}`}>
         <Link href={'/'}><li className={pathname === '/' ? 'select':''}>Home</li></Link>
 
-        {isAuthenticated && (
+        {isAdmin && (
           <>
             <Link href={'/CreateUser'}><li className={pathname === '/CreateUser' ? 'select':''}>Create User</li></Link>
             <Link href={'/CreateVote'}><li className={pathname === '/CreateVote' ? 'select':''}>Create Vote</li></Link>

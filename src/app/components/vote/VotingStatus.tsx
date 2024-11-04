@@ -7,10 +7,10 @@ import { useWebSocket, Vote } from "@/app/services/webSocketService";
 export default function VotingStatus() {
   const { votes } = useWebSocket();
 
-  // Filtrar votos válidos (no nulos o indefinidos)
-  const validVotes = votes.filter((vote): vote is Vote => vote !== null && vote !== undefined);
+  const validVotes = (Array.isArray(votes) ? votes : []).filter(
+    (vote): vote is Vote => vote !== null && vote !== undefined
+  );
 
-  // Filtrar solo aquellos votos que tienen una opción no nula
   const filteredVotes = validVotes.filter(vote => vote.option !== null);
 
   return (

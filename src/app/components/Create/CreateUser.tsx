@@ -15,13 +15,12 @@ export default function CreateUser() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      // Cambia a true o false dependiendo de si deseas enviar el token
       const response = await fetchData(formData, '/user/registerUser', 'POST', true);
-      setMessage('User created successfully!');
       setFormData({ name: '', mail: '' });
     } catch (error) {
       setMessage('Error creating user: ' + error);
     }
+    setMessage('User created successfully!');
   };
 
   return (

@@ -8,7 +8,7 @@ import UserTracker from "../components/user/UserTracker";
 
 export default function Page() {
   const { fetchData } = useFetch();
-  const [users, setUsers] = useState<User[]>([]); // Asegúrate de que 'users' sea un arreglo de 'User'
+  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -28,7 +28,7 @@ export default function Page() {
       <VoteAssignment />
       <UserTracker
         title="Users"
-        items={users} // Debe ser un arreglo de usuarios
+        items={users}
         RenderComponent={MapeoUser}
       />
     </>
